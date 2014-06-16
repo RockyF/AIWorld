@@ -1,0 +1,16 @@
+{
+	"resources": [
+		{
+			"name": "face",
+			"type": "image",
+			"url": "assets/face.png"
+		}
+	],
+
+	"groups": [
+		{
+			"name": "preload",
+			"keys": "face"
+		}
+	]
+}
