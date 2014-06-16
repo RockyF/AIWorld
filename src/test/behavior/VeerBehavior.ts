@@ -51,33 +51,29 @@ class VeerBehavior extends TBehavior{
 	}
 
 	private bounce():void {
-		if (true) {
-			if (this.position.x > this.stageWidth) {
-				this.position.x = this.stageWidth;
-				this.velocity.x *= -1;
-			}
-			else if (this.position.x < 0) {
-				this.position.x = 0;
-				this.velocity.x *= -1;
-			}
-			if (this.position.y > this.stageHeight) {
-				this.position.y = this.stageHeight;
-				this.velocity.y *= -1;
-			}
-			else if (this.position.y < 0) {
-				this.position.y = 0;
-				this.velocity.y *= -1;
-			}
+		if (this.position.x > this.stageWidth) {
+			this.position.x = this.stageWidth;
+			this.velocity.x *= -1;
+		}
+		else if (this.position.x < 0) {
+			this.position.x = 0;
+			this.velocity.x *= -1;
+		}
+		if (this.position.y > this.stageHeight) {
+			this.position.y = this.stageHeight;
+			this.velocity.y *= -1;
+		}
+		else if (this.position.y < 0) {
+			this.position.y = 0;
+			this.velocity.y *= -1;
 		}
 	}
 
 	private wrap():void {
-		if (true) {
-			if (this.position.x > this.stageWidth) this.position.x = 0;
-			if (this.position.x < 0) this.position.x = this.stageWidth;
-			if (this.position.y > this.stageHeight) this.position.y = 0;
-			if (this.position.y < 0) this.position.y = this.stageHeight;
-		}
+		if (this.position.x > this.stageWidth) this.position.x = 0;
+		if (this.position.x < 0) this.position.x = this.stageWidth;
+		if (this.position.y > this.stageHeight) this.position.y = 0;
+		if (this.position.y < 0) this.position.y = this.stageHeight;
 	}
 
 	public set edgeBehavior(value:string) {

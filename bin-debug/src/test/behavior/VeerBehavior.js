@@ -44,35 +44,31 @@ var VeerBehavior = (function (_super) {
     };
 
     VeerBehavior.prototype.bounce = function () {
-        if (true) {
-            if (this.position.x > this.stageWidth) {
-                this.position.x = this.stageWidth;
-                this.velocity.x *= -1;
-            } else if (this.position.x < 0) {
-                this.position.x = 0;
-                this.velocity.x *= -1;
-            }
-            if (this.position.y > this.stageHeight) {
-                this.position.y = this.stageHeight;
-                this.velocity.y *= -1;
-            } else if (this.position.y < 0) {
-                this.position.y = 0;
-                this.velocity.y *= -1;
-            }
+        if (this.position.x > this.stageWidth) {
+            this.position.x = this.stageWidth;
+            this.velocity.x *= -1;
+        } else if (this.position.x < 0) {
+            this.position.x = 0;
+            this.velocity.x *= -1;
+        }
+        if (this.position.y > this.stageHeight) {
+            this.position.y = this.stageHeight;
+            this.velocity.y *= -1;
+        } else if (this.position.y < 0) {
+            this.position.y = 0;
+            this.velocity.y *= -1;
         }
     };
 
     VeerBehavior.prototype.wrap = function () {
-        if (true) {
-            if (this.position.x > this.stageWidth)
-                this.position.x = 0;
-            if (this.position.x < 0)
-                this.position.x = this.stageWidth;
-            if (this.position.y > this.stageHeight)
-                this.position.y = 0;
-            if (this.position.y < 0)
-                this.position.y = this.stageHeight;
-        }
+        if (this.position.x > this.stageWidth)
+            this.position.x = 0;
+        if (this.position.x < 0)
+            this.position.x = this.stageWidth;
+        if (this.position.y > this.stageHeight)
+            this.position.y = 0;
+        if (this.position.y < 0)
+            this.position.y = this.stageHeight;
     };
 
 
@@ -170,6 +166,10 @@ var VeerBehavior = (function (_super) {
         var desiredVelocity = target.subtract(this._position);
         desiredVelocity.normalize();
         var dist = this._position.dist(target);
+        if (dist < 1) {
+            return;
+        }
+        console.log(dist);
         if (dist > this._arrivalThreshold) {
             desiredVelocity = desiredVelocity.multiply(this._maxSpeed);
         } else {
