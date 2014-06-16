@@ -19,6 +19,10 @@ var Ground = (function (_super) {
         var _this = this;
         _super.call(this);
         this.onUpdate = function (objectMap) {
+            objectMap.foreach(function (item) {
+                item.userData.x = item.x;
+                item.userData.y = item.y;
+            }, _this);
         };
         this.clock = function () {
             _this.world.update();
@@ -42,7 +46,7 @@ var Ground = (function (_super) {
         this.addChild(mouse);
         this.world.addDataObject(dataObject);
 
-        setInterval(this.clock, 1000);
+        setInterval(this.clock, 10);
     };
     return Ground;
 })(egret.Sprite);

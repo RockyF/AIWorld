@@ -34,11 +34,14 @@ class Ground extends egret.Sprite{
 		this.addChild(mouse);
 		this.world.addDataObject(dataObject);
 
-		setInterval(this.clock, 1000);
+		setInterval(this.clock, 10);
 	}
 
 	onUpdate=(objectMap:HashMap):void=>{
-
+		objectMap.foreach(function(item):void{
+			item.userData.x = item.x;
+			item.userData.y = item.y;
+		}, this);
 	};
 
 	clock=():void=>{
