@@ -1,16 +1,21 @@
 {
 	"resources": [
 		{
-			"name": "face",
+			"name": "mouse_face",
 			"type": "image",
-			"url": "assets/face.png"
+			"url": "assets/mouse.png"
+		},
+		{
+			"name": "cat_face",
+			"type": "image",
+			"url": "assets/cat.png"
 		}
 	],
 
 	"groups": [
 		{
 			"name": "preload",
-			"keys": "face"
+			"keys": "mouse_face,cat_face"
 		}
 	]
 }

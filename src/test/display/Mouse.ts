@@ -7,8 +7,9 @@
 class Mouse extends egret.Sprite{
 	constructor(){
 		super();
-		var label:egret.TextField = new egret.TextField();
-		label.text = "吱";
-		this.addChild(label);
+		var imgFace:egret.Bitmap = new egret.Bitmap(RES.getRes("mouse_face"));
+		imgFace.x = - imgFace.width / 2;
+		imgFace.y = - imgFace.height / 2;
+		this.addChild(imgFace);
 	}
 }

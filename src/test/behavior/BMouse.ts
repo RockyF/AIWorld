@@ -2,14 +2,17 @@
  * Created by lenovo on 2014/6/16.
  */
 
-///<reference path="../../core/TBehavior.ts"/>
+class BMouse extends VeerBehavior{
+	leaveAway():void{
+		this.position = new Vector2D(Math.random() * 480, Math.random() * 800);
+	}
 
-class BMouse extends TBehavior{
 	onUpdate():void{
-
+		this.wander();
+		this.update();
 	}
 	onCreate():void{
-
+		this.maxSpeed = 3;
 	}
 	onDestroy():void{
 

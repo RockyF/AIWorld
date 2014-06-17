@@ -13,6 +13,8 @@ var BCat = (function (_super) {
     __extends(BCat, _super);
     function BCat() {
         _super.apply(this, arguments);
+        this.changeInterval = 500;
+        this.interval = 0;
     }
     BCat.prototype.onCreate = function () {
         this.objectMap = TContext.getInstance().objectMap;
@@ -22,23 +24,42 @@ var BCat = (function (_super) {
     };
 
     BCat.prototype.onUpdate = function () {
+        /*this.interval ++;
+        console.log(this.interval);
+        if(this.interval >= this.changeInterval){
+        this.interval = 0;
+        this.chooseTargetMouse(true);
+        }else{
         this.chooseTargetMouse();
+        }*/
+        this.chooseTargetMouse(Math.random() < 0.01);
+
         this.arrive(this.targetVector);
         this.update();
     };
 
-    BCat.prototype.chooseTargetMouse = function () {
-        if (!this.targetMouse) {
-            while (true) {
-                this.targetMouse = (this.objectMap.randomGet());
-                if (this.targetMouse.behavior != this) {
-                    break;
-                }
-            }
+    BCat.prototype.arrivedCallback = function () {
+        this.targetMouse.behavior["leaveAway"]();
+        this.targetMouse = null;
+    };
+
+    BCat.prototype.chooseTargetMouse = function (force) {
+        if (typeof force === "undefined") { force = false; }
+        if (force || !this.targetMouse) {
+            this.targetMouse = this.getNewMouse();
         }
         if (this.targetMouse) {
             this.targetVector.x = this.targetMouse.x;
             this.targetVector.y = this.targetMouse.y;
+        }
+    };
+
+    BCat.prototype.getNewMouse = function () {
+        while (true) {
+            var t = (this.objectMap.randomGet());
+            if (t.behavior != this && t != this.targetMouse) {
+                return t;
+            }
         }
     };
     return BCat;

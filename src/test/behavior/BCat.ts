@@ -10,6 +10,9 @@ class BCat extends VeerBehavior{
 	targetMouse:TDataObject;
 	targetVector:Vector2D;
 
+	changeInterval:number = 500;
+	interval:number = 0;
+
 	onCreate():void{
 		this.objectMap = TContext.getInstance().objectMap;
 		this.targetVector = new Vector2D(this.target.x, this.target.y);
@@ -19,23 +22,41 @@ class BCat extends VeerBehavior{
 	}
 
 	onUpdate():void{
-		this.chooseTargetMouse();
+		/*this.interval ++;
+		console.log(this.interval);
+		if(this.interval >= this.changeInterval){
+			this.interval = 0;
+			this.chooseTargetMouse(true);
+		}else{
+			this.chooseTargetMouse();
+		}*/
+		this.chooseTargetMouse(Math.random() < 0.01);
+
 		this.arrive(this.targetVector);
 		this.update();
 	}
 
-	chooseTargetMouse():void{
-		if(!this.targetMouse){
-			while(true){
-				this.targetMouse = <TDataObject>(this.objectMap.randomGet());
-				if(this.targetMouse.behavior != this){
-					break;
-				}
-			}
+	public arrivedCallback():void{
+		this.targetMouse.behavior["leaveAway"]();
+		this.targetMouse = null;
+	}
+
+	chooseTargetMouse(force:boolean = false):void{
+		if(force || !this.targetMouse){
+			this.targetMouse = this.getNewMouse();
 		}
 		if(this.targetMouse){
 			this.targetVector.x = this.targetMouse.x;
 			this.targetVector.y = this.targetMouse.y;
+		}
+	}
+
+	getNewMouse():TDataObject{
+		while(true){
+			var t = <TDataObject>(this.objectMap.randomGet());
+			if(t.behavior != this && t != this.targetMouse){
+				return t;
+			}
 		}
 	}
 }

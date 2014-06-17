@@ -22,6 +22,7 @@ var Ground = (function (_super) {
             objectMap.foreach(function (item) {
                 item.userData.x = item.x;
                 item.userData.y = item.y;
+                item.userData.rotation = item.rotation;
             }, _this);
         };
         this.clock = function () {
@@ -34,16 +35,18 @@ var Ground = (function (_super) {
         this.world = new TWorld();
         this.world.onUpdate = this.onUpdate;
 
+        for (var i = 0; i < 10; i++) {
+            var mouse = new Mouse();
+            dataObject = TDataObject.create({ x: Math.random() * 480, y: Math.random() * 800, userData: mouse });
+            dataObject.bindBehavior("BMouse");
+            this.addChild(mouse);
+            this.world.addDataObject(dataObject);
+        }
+
         var cat = new Cat();
         var dataObject = TDataObject.create({ x: 100, y: 100, userData: cat });
         dataObject.bindBehavior("BCat");
         this.addChild(cat);
-        this.world.addDataObject(dataObject);
-
-        var mouse = new Mouse();
-        dataObject = TDataObject.create({ x: 400, y: 400, userData: mouse });
-        dataObject.bindBehavior("BMouse");
-        this.addChild(mouse);
         this.world.addDataObject(dataObject);
 
         setInterval(this.clock, 10);

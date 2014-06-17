@@ -12,9 +12,10 @@ var Cat = (function (_super) {
     __extends(Cat, _super);
     function Cat() {
         _super.call(this);
-        var label = new egret.TextField();
-        label.text = "喵";
-        this.addChild(label);
+        var imgFace = new egret.Bitmap(RES.getRes("cat_face"));
+        imgFace.x = -imgFace.width / 2;
+        imgFace.y = -imgFace.height / 2;
+        this.addChild(imgFace);
     }
     return Cat;
 })(egret.Sprite);

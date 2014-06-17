@@ -12,9 +12,10 @@ var Mouse = (function (_super) {
     __extends(Mouse, _super);
     function Mouse() {
         _super.call(this);
-        var label = new egret.TextField();
-        label.text = "吱";
-        this.addChild(label);
+        var imgFace = new egret.Bitmap(RES.getRes("mouse_face"));
+        imgFace.x = -imgFace.width / 2;
+        imgFace.y = -imgFace.height / 2;
+        this.addChild(imgFace);
     }
     return Mouse;
 })(egret.Sprite);

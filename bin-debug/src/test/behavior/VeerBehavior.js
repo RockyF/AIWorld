@@ -20,6 +20,11 @@ var VeerBehavior = (function (_super) {
         this._arrivalThreshold = 100;
         this.stageWidth = 480;
         this.stageHeight = 800;
+        this._arrived = false;
+        this._wanderAngle = 0;
+        this._wanderDistance = 10;
+        this._wanderRadius = 5;
+        this._wanderRange = 1;
 
         this._position = new Vector2D();
         this._velocity = new Vector2D();
@@ -162,14 +167,27 @@ var VeerBehavior = (function (_super) {
         this._steeringForce = this._steeringForce.subtract(force);
     };
 
+    VeerBehavior.prototype.arrivedCallback = function () {
+    };
+
+    VeerBehavior.prototype.leavedCallback = function () {
+    };
+
     VeerBehavior.prototype.arrive = function (target) {
         var desiredVelocity = target.subtract(this._position);
         desiredVelocity.normalize();
         var dist = this._position.dist(target);
         if (dist < 1) {
-            return;
+            if (!this._arrived) {
+                this._arrived = true;
+                this.arrivedCallback();
+            }
+        } else {
+            if (this._arrived) {
+                this._arrived = false;
+                this.leavedCallback();
+            }
         }
-        console.log(dist);
         if (dist > this._arrivalThreshold) {
             desiredVelocity = desiredVelocity.multiply(this._maxSpeed);
         } else {
@@ -195,6 +213,16 @@ var VeerBehavior = (function (_super) {
         var lookAheadTime = this.position.dist(target.position) / this._maxSpeed;
         var predictedTarget = target.position.add(target.velocity.multiply(lookAheadTime));
         this.seek(predictedTarget);
+    };
+
+    VeerBehavior.prototype.wander = function () {
+        var center = this.velocity.clone().normalize().multiply(this._wanderDistance);
+        var offset = new Vector2D(0);
+        offset.length = this._wanderRadius;
+        offset.angle = this._wanderAngle;
+        this._wanderAngle += Math.random() * this._wanderRange - this._wanderRange * .5;
+        var force = center.add(offset);
+        this._steeringForce = this._steeringForce.add(force);
     };
     VeerBehavior.WRAP = "wrap";
     VeerBehavior.BOUNCE = "bounce";

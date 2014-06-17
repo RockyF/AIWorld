@@ -7,8 +7,9 @@
 class Cat extends egret.Sprite{
 	constructor(){
 		super();
-		var label:egret.TextField = new egret.TextField();
-		label.text = "喵";
-		this.addChild(label);
+		var imgFace:egret.Bitmap = new egret.Bitmap(RES.getRes("cat_face"));
+		imgFace.x = - imgFace.width / 2;
+		imgFace.y = - imgFace.height / 2;
+		this.addChild(imgFace);
 	}
 }

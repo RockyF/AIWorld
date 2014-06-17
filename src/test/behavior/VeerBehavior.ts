@@ -5,7 +5,7 @@
 ///<reference path="../../egret.d.ts"/>
 ///<reference path="../../core/TBehavior.ts"/>
 
-class VeerBehavior extends TBehavior{
+class VeerBehavior extends TBehavior {
 	// potential edge behaviors
 	public static WRAP:string = "wrap";
 	public static BOUNCE:string = "bounce";
@@ -23,7 +23,7 @@ class VeerBehavior extends TBehavior{
 	private stageWidth:number = 480;
 	private stageHeight:number = 800;
 
-	constructor(){
+	constructor() {
 		super();
 
 		this._position = new Vector2D();
@@ -143,10 +143,31 @@ class VeerBehavior extends TBehavior{
 		this._steeringForce = this._steeringForce.subtract(force);
 	}
 
+	private _arrived:boolean = false;
+
+	public arrivedCallback():void {
+
+	}
+
+	public leavedCallback():void {
+
+	}
+
 	public arrive(target:Vector2D):void {
 		var desiredVelocity:Vector2D = target.subtract(this._position);
 		desiredVelocity.normalize();
 		var dist:number = this._position.dist(target);
+		if (dist < 1) {
+			if (!this._arrived) {
+				this._arrived = true;
+				this.arrivedCallback();
+			}
+		} else {
+			if (this._arrived) {
+				this._arrived = false;
+				this.leavedCallback();
+			}
+		}
 		if (dist > this._arrivalThreshold) {
 			desiredVelocity = desiredVelocity.multiply(this._maxSpeed);
 		}
@@ -165,9 +186,24 @@ class VeerBehavior extends TBehavior{
 		return this._arrivalThreshold;
 	}
 
-	public pursue(target: VeerBehavior): void{
-		var lookAheadTime: number = this.position.dist(target.position) / this._maxSpeed;
-		var predictedTarget: Vector2D = target.position.add(target.velocity.multiply(lookAheadTime));
+	public pursue(target:VeerBehavior):void {
+		var lookAheadTime:number = this.position.dist(target.position) / this._maxSpeed;
+		var predictedTarget:Vector2D = target.position.add(target.velocity.multiply(lookAheadTime));
 		this.seek(predictedTarget);
+	}
+
+	private _wanderAngle:number = 0;
+	private _wanderDistance:number = 10;
+	private _wanderRadius:number = 5;
+	private _wanderRange:number = 1;
+
+	public wander():void {
+		var center:Vector2D = this.velocity.clone().normalize().multiply(this._wanderDistance);
+		var offset:Vector2D = new Vector2D(0);
+		offset.length = this._wanderRadius;
+		offset.angle = this._wanderAngle;
+		this._wanderAngle += Math.random() * this._wanderRange - this._wanderRange * .5;
+		var force:Vector2D = center.add(offset);
+		this._steeringForce = this._steeringForce.add(force);
 	}
 }
