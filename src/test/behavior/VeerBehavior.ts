@@ -154,12 +154,12 @@ class VeerBehavior extends TBehavior {
 	public arrive(target:Vector2D):void {
 		var desiredVelocity:Vector2D = target.subtract(this._position);
 		desiredVelocity.normalize();
-		var dist:number = this._position.dist(target);
-		if (dist < 1) {
-			if (!this._arrived) {
-				this._arrived = true;
-				this.arrivedCallback();
-			}
+			var dist:number = this._position.dist(target);
+			if (dist < 1) {
+				if (!this._arrived) {
+					this._arrived = true;
+					this.arrivedCallback();
+				}
 		} else {
 			if (this._arrived) {
 				this._arrived = false;
