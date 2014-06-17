@@ -20,9 +20,6 @@ class VeerBehavior extends TBehavior {
 	private _steeringForce:Vector2D;
 	private _arrivalThreshold:number = 100;
 
-	private stageWidth:number = 480;
-	private stageHeight:number = 800;
-
 	constructor() {
 		super();
 
@@ -51,16 +48,16 @@ class VeerBehavior extends TBehavior {
 	}
 
 	private bounce():void {
-		if (this.position.x > this.stageWidth) {
-			this.position.x = this.stageWidth;
+		if (this.position.x > this.world.width) {
+			this.position.x = this.world.width;
 			this.velocity.x *= -1;
 		}
 		else if (this.position.x < 0) {
 			this.position.x = 0;
 			this.velocity.x *= -1;
 		}
-		if (this.position.y > this.stageHeight) {
-			this.position.y = this.stageHeight;
+		if (this.position.y > this.world.height) {
+			this.position.y = this.world.height;
 			this.velocity.y *= -1;
 		}
 		else if (this.position.y < 0) {
@@ -70,10 +67,10 @@ class VeerBehavior extends TBehavior {
 	}
 
 	private wrap():void {
-		if (this.position.x > this.stageWidth) this.position.x = 0;
-		if (this.position.x < 0) this.position.x = this.stageWidth;
-		if (this.position.y > this.stageHeight) this.position.y = 0;
-		if (this.position.y < 0) this.position.y = this.stageHeight;
+		if (this.position.x > this.world.width) this.position.x = 0;
+		if (this.position.x < 0) this.position.x = this.world.width;
+		if (this.position.y > this.world.height) this.position.y = 0;
+		if (this.position.y < 0) this.position.y = this.world.height;
 	}
 
 	public set edgeBehavior(value:string) {

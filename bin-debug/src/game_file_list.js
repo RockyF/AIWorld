@@ -4,6 +4,7 @@ var game_file_list = [
 	"utils/HashMap.js",
 	"utils/Utils.js",
 	"utils/Vector2D.js",
+	"core/TInput.js",
 	"core/TBehavior.js",
 	"core/TContext.js",
 	"core/TDataObject.js",

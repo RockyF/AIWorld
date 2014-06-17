@@ -18,8 +18,6 @@ var VeerBehavior = (function (_super) {
         this._maxSpeed = 10;
         this._maxForce = 1;
         this._arrivalThreshold = 100;
-        this.stageWidth = 480;
-        this.stageHeight = 800;
         this._arrived = false;
         this._wanderAngle = 0;
         this._wanderDistance = 10;
@@ -49,15 +47,15 @@ var VeerBehavior = (function (_super) {
     };
 
     VeerBehavior.prototype.bounce = function () {
-        if (this.position.x > this.stageWidth) {
-            this.position.x = this.stageWidth;
+        if (this.position.x > this.world.width) {
+            this.position.x = this.world.width;
             this.velocity.x *= -1;
         } else if (this.position.x < 0) {
             this.position.x = 0;
             this.velocity.x *= -1;
         }
-        if (this.position.y > this.stageHeight) {
-            this.position.y = this.stageHeight;
+        if (this.position.y > this.world.height) {
+            this.position.y = this.world.height;
             this.velocity.y *= -1;
         } else if (this.position.y < 0) {
             this.position.y = 0;
@@ -66,14 +64,14 @@ var VeerBehavior = (function (_super) {
     };
 
     VeerBehavior.prototype.wrap = function () {
-        if (this.position.x > this.stageWidth)
+        if (this.position.x > this.world.width)
             this.position.x = 0;
         if (this.position.x < 0)
-            this.position.x = this.stageWidth;
-        if (this.position.y > this.stageHeight)
+            this.position.x = this.world.width;
+        if (this.position.y > this.world.height)
             this.position.y = 0;
         if (this.position.y < 0)
-            this.position.y = this.stageHeight;
+            this.position.y = this.world.height;
     };
 
 

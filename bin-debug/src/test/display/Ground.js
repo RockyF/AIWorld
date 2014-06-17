@@ -32,20 +32,20 @@ var Ground = (function (_super) {
         this.init();
     }
     Ground.prototype.init = function () {
-        this.world = new TWorld();
+        this.world = new TWorld(480, 600);
         this.world.onUpdate = this.onUpdate;
 
         for (var i = 0; i < 10; i++) {
             var mouse = new Mouse();
-            dataObject = TDataObject.create({ x: Math.random() * 480, y: Math.random() * 800, userData: mouse });
-            dataObject.bindBehavior("BMouse");
+            dataObject = this.world.createDataObject({ x: Math.random() * 480, y: Math.random() * 800, userData: mouse });
+            dataObject.bindBehavior(this.world.createBehavior("BMouse"));
             this.addChild(mouse);
             this.world.addDataObject(dataObject);
         }
 
         var cat = new Cat();
-        var dataObject = TDataObject.create({ x: 100, y: 100, userData: cat });
-        dataObject.bindBehavior("BCat");
+        var dataObject = this.world.createDataObject({ x: 100, y: 100, userData: cat });
+        dataObject.bindBehavior(this.world.createBehavior("BCat"));
         this.addChild(cat);
         this.world.addDataObject(dataObject);
 

@@ -2,7 +2,6 @@
  * Created by lenovo on 2014/6/16.
  */
 
-///<reference path="../../core/TContext.ts"/>
 ///<reference path="../../utils/Vector2D.ts"/>
 
 class BCat extends VeerBehavior{
@@ -14,7 +13,7 @@ class BCat extends VeerBehavior{
 	interval:number = 0;
 
 	onCreate():void{
-		this.objectMap = TContext.getInstance().objectMap;
+		this.objectMap = this.world.objectMap;
 		this.targetVector = new Vector2D(this.target.x, this.target.y);
 	}
 	onDestroy():void{

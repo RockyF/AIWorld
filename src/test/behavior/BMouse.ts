@@ -4,7 +4,7 @@
 
 class BMouse extends VeerBehavior{
 	leaveAway():void{
-		this.position = new Vector2D(Math.random() * 480, Math.random() * 800);
+		this.position = new Vector2D(Math.random() * this.world.width, Math.random() * this.world.height);
 	}
 
 	onUpdate():void{

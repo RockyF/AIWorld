@@ -3,39 +3,58 @@
  */
 
 ///<reference path="../utils/HashMap.ts"/>
-///<reference path="TContext.ts"/>
 ///<reference path="TDataObject.ts"/>
 
 class TWorld{
-	private _objectMap:HashMap;
+	objectMap:HashMap;
+	private _input:TInput;
 
+	width:number;
+	height:number;
 	onUpdate:Function;
 
-	constructor(){
-		this._objectMap = new HashMap();
-
-		TContext.getInstance().init(this._objectMap, null);
+	constructor(width:number, height:number){
+		this.width = width;
+		this.height = height;
+		this.objectMap = new HashMap();
+		this._input = new TInput();
 	}
 
 	addDataObject(obj:TDataObject):void{
-		this._objectMap.put(obj.id, obj);
+		this.objectMap.put(obj.id, obj);
 	}
 
 	removeDataObject(obj:TDataObject):void{
-		this._objectMap.remove(obj.id);
+		this.objectMap.remove(obj.id);
 	}
 
 	removeDataObjectById(id:number):void{
-		this._objectMap.remove(id);
+		this.objectMap.remove(id);
 	}
 
 	update():void{
-		this._objectMap.foreach(function(item:TDataObject):void{
+		this.objectMap.foreach(function(item:TDataObject):void{
 			item.update();
 		}, this);
 
 		if(this.onUpdate){
-			this.onUpdate(this._objectMap);
+			this.onUpdate(this.objectMap);
 		}
+	}
+
+	createDataObject(data:Object):TDataObject{
+		var instance:TDataObject = new TDataObject();
+		Utils.injectProp(instance, data);
+
+		return instance;
+	}
+
+	createBehavior(behaviorName:string):TBehavior{
+		var def = Utils.getDefinitionByName(behaviorName);
+		var behavior = new def();
+		behavior.world = this;
+		behavior.input = this._input;
+
+		return behavior;
 	}
 }

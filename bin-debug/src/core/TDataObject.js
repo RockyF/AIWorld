@@ -7,18 +7,8 @@ var TDataObject = (function () {
     function TDataObject() {
         this.id = TDataObject.ID_INK++;
     }
-    TDataObject.create = function (data) {
-        var instance = new TDataObject();
-        Utils.injectProp(instance, data);
-
-        return instance;
-    };
-
-    TDataObject.prototype.bindBehavior = function (behaviorName) {
-        this.behaviorName = behaviorName;
-
-        var def = Utils.getDefinitionByName(this.behaviorName);
-        this.behavior = new def();
+    TDataObject.prototype.bindBehavior = function (behavior) {
+        this.behavior = behavior;
         this.behavior.target = this;
         this.behavior.onCreate();
     };

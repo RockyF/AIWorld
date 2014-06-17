@@ -3,6 +3,8 @@
  */
 
 class TBehavior{
+	world:TWorld;
+	input:TInput;
 	target:TDataObject;
 
 	onCreate():void{

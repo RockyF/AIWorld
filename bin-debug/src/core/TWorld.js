@@ -2,34 +2,50 @@
 * Created by lenovo on 2014/6/16.
 */
 ///<reference path="../utils/HashMap.ts"/>
-///<reference path="TContext.ts"/>
 ///<reference path="TDataObject.ts"/>
 var TWorld = (function () {
-    function TWorld() {
-        this._objectMap = new HashMap();
-
-        TContext.getInstance().init(this._objectMap, null);
+    function TWorld(width, height) {
+        this.width = width;
+        this.height = height;
+        this.objectMap = new HashMap();
+        this._input = new TInput();
     }
     TWorld.prototype.addDataObject = function (obj) {
-        this._objectMap.put(obj.id, obj);
+        this.objectMap.put(obj.id, obj);
     };
 
     TWorld.prototype.removeDataObject = function (obj) {
-        this._objectMap.remove(obj.id);
+        this.objectMap.remove(obj.id);
     };
 
     TWorld.prototype.removeDataObjectById = function (id) {
-        this._objectMap.remove(id);
+        this.objectMap.remove(id);
     };
 
     TWorld.prototype.update = function () {
-        this._objectMap.foreach(function (item) {
+        this.objectMap.foreach(function (item) {
             item.update();
         }, this);
 
         if (this.onUpdate) {
-            this.onUpdate(this._objectMap);
+            this.onUpdate(this.objectMap);
         }
+    };
+
+    TWorld.prototype.createDataObject = function (data) {
+        var instance = new TDataObject();
+        Utils.injectProp(instance, data);
+
+        return instance;
+    };
+
+    TWorld.prototype.createBehavior = function (behaviorName) {
+        var def = Utils.getDefinitionByName(behaviorName);
+        var behavior = new def();
+        behavior.world = this;
+        behavior.input = this._input;
+
+        return behavior;
     };
     return TWorld;
 })();

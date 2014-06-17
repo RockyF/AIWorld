@@ -13,7 +13,7 @@ var BMouse = (function (_super) {
         _super.apply(this, arguments);
     }
     BMouse.prototype.leaveAway = function () {
-        this.position = new Vector2D(Math.random() * 480, Math.random() * 800);
+        this.position = new Vector2D(Math.random() * this.world.width, Math.random() * this.world.height);
     };
 
     BMouse.prototype.onUpdate = function () {

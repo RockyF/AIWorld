@@ -6,13 +6,6 @@
 ///<reference path="TBehavior.ts"/>
 
 class TDataObject{
-	static create(data:Object){
-		var instance:TDataObject = new TDataObject();
-		Utils.injectProp(instance, data);
-		
-		return instance;
-	}
-
 	static ID_INK:number = 0;
 
 	id:number;
@@ -24,7 +17,6 @@ class TDataObject{
 
 	userData:Object;
 
-	behaviorName:string;
 	behavior:TBehavior;
 
 	constructor(){
@@ -32,11 +24,8 @@ class TDataObject{
 
 	}
 
-	bindBehavior(behaviorName:string):void{
-		this.behaviorName = behaviorName;
-
-		var def = Utils.getDefinitionByName(this.behaviorName);
-		this.behavior = new def();
+	bindBehavior(behavior:TBehavior):void{
+		this.behavior = behavior;
 		this.behavior.target = this;
 		this.behavior.onCreate();
 	}

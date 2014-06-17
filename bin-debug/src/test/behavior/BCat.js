@@ -7,7 +7,6 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-///<reference path="../../core/TContext.ts"/>
 ///<reference path="../../utils/Vector2D.ts"/>
 var BCat = (function (_super) {
     __extends(BCat, _super);
@@ -17,7 +16,7 @@ var BCat = (function (_super) {
         this.interval = 0;
     }
     BCat.prototype.onCreate = function () {
-        this.objectMap = TContext.getInstance().objectMap;
+        this.objectMap = this.world.objectMap;
         this.targetVector = new Vector2D(this.target.x, this.target.y);
     };
     BCat.prototype.onDestroy = function () {
