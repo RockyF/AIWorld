@@ -180,19 +180,20 @@ var egret;
             if (locTexture == null || sourceHeight == 0 || sourceWidth == 0 || destWidth == 0 || destHeight == 0) {
                 return;
             }
-            this._originalData.sourceX = sourceX;
-            this._originalData.sourceY = sourceY;
-            this._originalData.sourceWidth = sourceWidth;
-            this._originalData.sourceHeight = sourceHeight;
-            this._originalData.destX = destX;
-            this._originalData.destY = destY;
-            this._originalData.destWidth = destWidth;
-            this._originalData.destHeight = destHeight;
+            var originalData = this._originalData;
+            originalData.sourceX = sourceX;
+            originalData.sourceY = sourceY;
+            originalData.sourceWidth = sourceWidth;
+            originalData.sourceHeight = sourceHeight;
+            originalData.destX = destX;
+            originalData.destY = destY;
+            originalData.destWidth = destWidth;
+            originalData.destHeight = destHeight;
 
             var locDrawAreaList = this.getDrawAreaList();
             for (var j = 0; j < locDrawAreaList.length; j++) {
                 var drawArea = locDrawAreaList[j];
-                if (this.ignoreRender(data, drawArea, this._originalData.destX, this._originalData.destY)) {
+                if (this.ignoreRender(data, drawArea, originalData.destX, originalData.destY)) {
                     continue;
                 }
 
@@ -201,7 +202,7 @@ var egret;
                     //不能允许有旋转和斜切的显示对象跨过重绘区域
                     if (data.worldTransform.b != 0 || data.worldTransform.c != 0) {
                         //之前已经判断过是否出了重绘区域了
-                        if (data.worldBounds.x + this._originalData.destX < drawArea.x || data.worldBounds.y + this._originalData.destY < drawArea.y || data.worldBounds.x + data.worldBounds.width + this._originalData.destX > drawArea.x + drawArea.width || data.worldBounds.y + data.worldBounds.height + this._originalData.destY > drawArea.y + drawArea.height) {
+                        if (data.worldBounds.x + originalData.destX < drawArea.x || data.worldBounds.y + originalData.destY < drawArea.y || data.worldBounds.x + data.worldBounds.width + originalData.destX > drawArea.x + drawArea.width || data.worldBounds.y + data.worldBounds.height + originalData.destY > drawArea.y + drawArea.height) {
                             egret.Logger.fatal("请不要让带有旋转和斜切的显示对象跨过重绘区域");
                             return;
                         }
@@ -210,27 +211,27 @@ var egret;
                         var scaleX = data.worldTransform.a;
                         var scaleY = data.worldTransform.d;
                         var offset;
-                        if (data.worldBounds.x + this._originalData.destX < drawArea.x) {
-                            offset = (drawArea.x - data.worldBounds.x) / scaleX - this._originalData.destX;
+                        if (data.worldBounds.x + originalData.destX < drawArea.x) {
+                            offset = (drawArea.x - data.worldBounds.x) / scaleX - originalData.destX;
                             sourceX += offset / (destWidth / sourceWidth);
                             sourceWidth -= offset / (destWidth / sourceWidth);
                             destWidth -= offset;
                             destX += offset;
                         }
-                        if (data.worldBounds.y + this._originalData.destY < drawArea.y) {
-                            offset = (drawArea.y - data.worldBounds.y) / scaleY - this._originalData.destY;
+                        if (data.worldBounds.y + originalData.destY < drawArea.y) {
+                            offset = (drawArea.y - data.worldBounds.y) / scaleY - originalData.destY;
                             sourceY += offset / (destHeight / sourceHeight);
                             sourceHeight -= offset / (destHeight / sourceHeight);
                             destHeight -= offset;
                             destY += offset;
                         }
-                        if (data.worldBounds.x + data.worldBounds.width + this._originalData.destX > drawArea.x + drawArea.width) {
-                            offset = (data.worldBounds.x + data.worldBounds.width - drawArea.x - drawArea.width) / scaleX + this._originalData.destX;
+                        if (data.worldBounds.x + data.worldBounds.width + originalData.destX > drawArea.x + drawArea.width) {
+                            offset = (data.worldBounds.x + data.worldBounds.width - drawArea.x - drawArea.width) / scaleX + originalData.destX;
                             sourceWidth -= offset / (destWidth / sourceWidth);
                             destWidth -= offset;
                         }
-                        if (data.worldBounds.y + data.worldBounds.height + this._originalData.destY > drawArea.y + drawArea.height) {
-                            offset = (data.worldBounds.y + data.worldBounds.height - drawArea.y - drawArea.height) / scaleY + this._originalData.destY;
+                        if (data.worldBounds.y + data.worldBounds.height + originalData.destY > drawArea.y + drawArea.height) {
+                            offset = (data.worldBounds.y + data.worldBounds.height - drawArea.y - drawArea.height) / scaleY + originalData.destY;
                             sourceHeight -= offset / (destHeight / sourceHeight);
                             destHeight -= offset;
                         }
@@ -238,17 +239,8 @@ var egret;
                 }
 
                 renderContext.drawImage(locTexture, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
-
                 //测试代码，把画出来的区域用红框标出来
                 //                renderContext.strokeRect(destX, destY, destWidth, destHeight, "#ff0000");
-                sourceX = this._originalData.sourceX;
-                sourceY = this._originalData.sourceY;
-                sourceWidth = this._originalData.sourceWidth;
-                sourceHeight = this._originalData.sourceHeight;
-                destX = this._originalData.destX;
-                destY = this._originalData.destY;
-                destWidth = this._originalData.destWidth;
-                destHeight = this._originalData.destHeight;
             }
         };
 

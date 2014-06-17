@@ -8,4 +8,8 @@ class TInput{
 	mouseDown:boolean;
 	keyCode:number;
 	keyDown:boolean;
+
+	constructor(){
+
+	}
 }

@@ -1,4 +1,3 @@
-/// <reference path="C:/Users/lenovo/AppData/Roaming/npm/node_modules/egret/src/jslib/DEBUG.d.ts" />
 /**
 * Copyright (c) 2014,Egret-Labs.org
 * All rights reserved.
@@ -1087,12 +1086,6 @@ declare module egret {
         */
         public appendTransform(x: number, y: number, scaleX: number, scaleY: number, rotation: number, skewX: number, skewY: number, regX: number, regY: number): Matrix;
         /**
-        * @method egret.Matrix#appendTransformFromDisplay
-        * @param target {egret.DisplayObject}
-        * @returns {egret.Matrix}
-        */
-        public appendTransformFromDisplay(target: DisplayObject): Matrix;
-        /**
         * 矩阵旋转，以角度制为单位
         * @method egret.Matrix#rotate
         * @param angle {number}
@@ -1660,6 +1653,8 @@ declare module egret {
     * DisplayObjectContainer 类是显示列表中显示对象容器。
     */
     class DisplayObjectContainer extends DisplayObject {
+        static __EVENT__ADD_TO_STAGE_LIST: DisplayObject[];
+        static __EVENT__REMOVE_FROM_STAGE_LIST: DisplayObject[];
         constructor();
         public _touchChildren: boolean;
         /**
@@ -1767,6 +1762,13 @@ declare module egret {
         public hitTest(x: number, y: number, ignoreTouchEnabled?: boolean): DisplayObject;
         public _onAddToStage(): void;
         public _onRemoveFromStage(): void;
+        /**
+        * 很据子显示对象的name属性获取子显示对象
+        * @method egret.DisplayObjectContainer#getChildByName
+        * @param name {string} name
+        * @returns {egret.DisplayObject}
+        */
+        public getChildByName(name: string): DisplayObject;
     }
 }
 declare module egret {
@@ -1924,7 +1926,7 @@ declare module egret {
         * @param destWidth {any}
         * @param destHeight {any}
         */
-        public drawImage(renderContext: any, data: RenderData, sourceX: any, sourceY: any, sourceWidth: any, sourceHeight: any, destX: any, destY: any, destWidth: any, destHeight: any): void;
+        public drawImage(renderContext: RendererContext, data: RenderData, sourceX: number, sourceY: number, sourceWidth: number, sourceHeight: number, destX: number, destY: number, destWidth: number, destHeight: number): void;
         private ignoreRender(data, rect, destX, destY);
         /**
         * @method egret.egret#getDrawAreaList
@@ -2051,7 +2053,6 @@ declare module egret {
         public _texture_to_render: Texture;
         public _parent: DisplayObjectContainer;
         /**
-        * 11111
         * @event egret.Event.event:ADDED_TO_STAGE
         */
         private _cacheAsBitmap;
@@ -2060,9 +2061,6 @@ declare module egret {
         * @member {egret.DisplayObjectContainer} egret.DisplayObject#parent
         */
         public parent : DisplayObjectContainer;
-        /**
-        * 仅供框架内部调用。
-        */
         public _parentChanged(parent: DisplayObjectContainer): void;
         public _x: number;
         /**
@@ -2189,6 +2187,7 @@ declare module egret {
         public explicitHeight : number;
         /**
         * 宽度，优先顺序为 显式设置宽度 > 测量宽度
+        * @member {number} egret.DisplayObject#width
         * @returns {number}
         */
         /**
@@ -2198,6 +2197,7 @@ declare module egret {
         public width : number;
         /**
         * 高度，优先顺序为 显式设置高度 > 测量高度
+        * @member {number} egret.DisplayObject#height
         * @returns {number}
         */
         /**
@@ -2281,6 +2281,11 @@ declare module egret {
         */
         public hitTest(x: number, y: number, ignoreTouchEnabled?: boolean): DisplayObject;
         public _getMatrix(): Matrix;
+        public _getSize(resultRect: Rectangle): Rectangle;
+        /**
+        * 测量显示对象坐标与大小
+        */
+        public _measureSize(resultRect: Rectangle): Rectangle;
         /**
         * 测量显示对象坐标，这个方法需要子类重写
         * @returns {egret.Rectangle}
@@ -2293,6 +2298,7 @@ declare module egret {
         public _stage: Stage;
         /**
         * 获取舞台对象。当该显示对象不在舞台上时，此属性返回 undefined
+        * @member {number} egret.DisplayObject#stage
         * @returns {egret.Stage}
         */
         public stage : Stage;
@@ -2953,7 +2959,7 @@ declare module egret {
         */
         public _textureMap: Object;
         /**
-        * 根据指定纹理名称获取一个缓存的Textrue对象
+        * 根据指定纹理名称获取一个缓存的Texture对象
         * @method egret.SpriteSheet#getTexture
         * @param name {string} 缓存这个Texture对象所使用的名称，如果名称已存在，将会覆盖之前的Texture对象
         * @returns {egret.Texture} 创建的Texture对象
@@ -3082,6 +3088,17 @@ declare module egret {
         * @param y
         */
         public lineTo(x: number, y: number): void;
+        /**
+        * 使用当前线条样式和由 (controlX, controlY) 指定的控制点绘制一条从当前绘图位置开始到 (anchorX, anchorY) 结束的二次贝塞尔曲线。当前绘图位置随后设置为 (anchorX, anchorY)。如果正在其中绘制的影片剪辑包含用 Flash 绘图工具创建的内容，则调用 curveTo() 方法将在该内容下面进行绘制。
+        * 如果在调用 moveTo() 方法之前调用了 curveTo() 方法，则当前绘图位置的默认值为 (0, 0)。如果缺少任何一个参数，则此方法将失败，并且当前绘图位置不改变。
+        * 绘制的曲线是二次贝塞尔曲线。二次贝塞尔曲线包含两个锚点和一个控制点。该曲线内插这两个锚点，并向控制点弯曲。
+        * @param controlX {number} 一个数字，指定控制点相对于父显示对象注册点的水平位置。
+        * @param controlY {number} 一个数字，指定控制点相对于父显示对象注册点的垂直位置。
+        * @param anchorX {number} 一个数字，指定下一个锚点相对于父显示对象注册点的水平位置。
+        * @param anchorY {number} 一个数字，指定下一个锚点相对于父显示对象注册点的垂直位置。
+        */
+        public curveTo(controlX: Number, controlY: Number, anchorX: Number, anchorY: Number): void;
+        public moveTo(x: number, y: number): void;
         public clear(): void;
         public endFill(): void;
         public _draw(): void;
@@ -3542,115 +3559,161 @@ declare module egret {
 * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 declare module RES {
+    /**
+    * @class RES.ResourceItem
+    * @classdesc
+    */
     class ResourceItem {
         /**
         * XML文件
+        * @constant {string} RES.ResourceItem.TYPE_XML
         */ 
         static TYPE_XML: string;
         /**
         * 图片文件
+        * @constant {string} RES.ResourceItem.TYPE_IMAGE
         */ 
         static TYPE_IMAGE: string;
         /**
         * 二进制流文件
+        * @constant {string} RES.ResourceItem.TYPE_BIN
         */ 
         static TYPE_BIN: string;
         /**
         * 文本文件(解析为字符串)
+        * @constant {string} RES.ResourceItem.TYPE_TEXT
         */ 
         static TYPE_TEXT: string;
         /**
         * JSON文件
+        * @constant {string} RES.ResourceItem.TYPE_JSON
         */
         static TYPE_JSON: string;
         /**
         * SpriteSheet文件
+        * @constant {string} RES.ResourceItem.TYPE_SHEET
         */
         static TYPE_SHEET: string;
         /**
         * BitmapTextSpriteSheet文件
+        * @constant {string} RES.ResourceItem.TYPE_FONT
         */
         static TYPE_FONT: string;
         /**
         * 声音文件
+        * @constant {string} RES.ResourceItem.TYPE_SOUND
         */
         static TYPE_SOUND: string;
         /**
         * 构造函数
-        * @param name 加载项名称
-        * @param url 要加载的文件地址
-        * @param type 加载项文件类型
+        * @method RES.ResourceItem#constructor
+        * @param name {string} 加载项名称
+        * @param url {string} 要加载的文件地址
+        * @param type {string} 加载项文件类型
         */
         constructor(name: string, url: string, type: string);
         /**
         * 加载项名称
+        * @member {string} RES.ResourceItem#name
         */
         public name: string;
         /**
         * 要加载的文件地址
+        * @member {string} RES.ResourceItem#url
         */
         public url: string;
         /**
         * 加载项文件类型
+        * @member {string} RES.ResourceItem#type
         */
         public type: string;
         /**
         * 所属组名
+        * @member {string} RES.ResourceItem#groupName
         */
         public groupName: string;
         /**
         * 被引用的原始数据对象
+        * @member {any} RES.ResourceItem#data
         */ 
         public data: any;
         private _loaded;
         /**
         * 加载完成的标志
+        * @member {boolean} RES.ResourceItem#loaded
         */
         public loaded : boolean;
+        /**
+        * @method RES.ResourceItem#toString
+        * @returns {string}
+        */
         public toString(): string;
     }
 }
 declare module RES {
+    /**
+    * @class RES.ResourceEvent
+    * @classdesc
+    * @extends egret.Event
+    */
     class ResourceEvent extends egret.Event {
         /**
         * 一个加载项加载失败事件。
+        * @constant {string} RES.ResourceEvent.ITEM_LOAD_ERROR
         */
         static ITEM_LOAD_ERROR: string;
         /**
         * 配置文件加载并解析完成事件
+        * @constant {string} RES.ResourceEvent.CONFIG_COMPLETE
         */ 
         static CONFIG_COMPLETE: string;
         /**
         * 延迟加载组资源加载进度事件
+        * @constant {string} RES.ResourceEvent.GROUP_PROGRESS
         */ 
         static GROUP_PROGRESS: string;
         /**
         * 延迟加载组资源加载完成事件
+        * @constant {string} RES.ResourceEvent.GROUP_COMPLETE
         */ 
         static GROUP_COMPLETE: string;
         /**
         * 构造函数
+        * @method RES.ResourceEvent#constructor
+        * @param type {string}
+        * @param bubbles {boolean}
+        * @param cancelable {boolean}
         */ 
         constructor(type: string, bubbles?: boolean, cancelable?: boolean);
         /**
         * 已经加载的文件数
+        * @member {number} RES.ResourceEvent#itemsLoaded
         */
         public itemsLoaded: number;
         /**
         * 要加载的总文件数
+        * @member {number} RES.ResourceEvent#itemsTotal
         */
         public itemsTotal: number;
         /**
         * 资源组名
+        * @member {string} RES.ResourceEvent#groupName
         */ 
         public groupName: string;
         /**
         * 一次加载项加载结束的项信息对象
+        * @member {egret.ResourceItem} RES.ResourceEvent#resItem
         */ 
         public resItem: ResourceItem;
         /**
         * 使用指定的EventDispatcher对象来抛出事件对象。抛出的对象将会缓存在对象池上，供下次循环复用。
-        * @method egret.ResourceEvent.dispatchResourceEvent
+        * @method RES.ResourceEvent.dispatchResourceEvent
+        * @param target {egret.IEventDispatcher}
+        * @param type {string}
+        * @param groupName {string}
+        * @param resItem {egret.ResourceItem}
+        * @param itemsLoaded {number}
+        * @param itemsTotal {number}
         */
         static dispatchResourceEvent(target: egret.IEventDispatcher, type: string, groupName?: string, resItem?: ResourceItem, itemsLoaded?: number, itemsTotal?: number): void;
     }
@@ -3800,17 +3863,25 @@ declare module RES {
     }
 }
 declare module RES {
+    /**
+    * @class RES.ResourceLoader
+    * @classdesc
+    * @extends egret.EventDispatcher
+    */
     class ResourceLoader extends egret.EventDispatcher {
         /**
         * 构造函数
+        * @method RES.ResourceLoader#constructor
         */
         constructor();
         /**
         * 一项加载结束回调函数。无论加载成功或者出错都将执行回调函数。示例：callBack(resItem:ResourceItem):void;
+        * @member {Function} RES.ResourceLoader#callBack
         */
         public callBack: Function;
         /**
         * RES单例的引用
+        * @member {any} RES.ResourceLoader#resInstance
         */
         public resInstance: any;
         /**
@@ -3831,13 +3902,17 @@ declare module RES {
         private priorityQueue;
         /**
         * 检查指定的组是否正在加载中
+        * @method RES.ResourceLoader#isGroupInLoading
+        * @param groupName {string}
+        * @returns {boolean}
         */ 
         public isGroupInLoading(groupName: string): boolean;
         /**
         * 开始加载一组文件
-        * @param list 加载项列表
-        * @param groupName 组名
-        * @param priority 加载优先级
+        * @method RES.ResourceLoader#loadGroup
+        * @param list {egret.Array<ResourceItem>} 加载项列表
+        * @param groupName {string} 组名
+        * @param priority {number} 加载优先级
         */ 
         public loadGroup(list: ResourceItem[], groupName: string, priority?: number): void;
         /**
@@ -3846,7 +3921,8 @@ declare module RES {
         private lazyLoadList;
         /**
         * 加载一个文件
-        * @param resItem 要加载的项
+        * @method RES.ResourceLoader#loadItem
+        * @param resItem {egret.ResourceItem} 要加载的项
         */ 
         public loadItem(resItem: ResourceItem): void;
         /**
@@ -3878,68 +3954,84 @@ declare module RES {
 declare module RES {
     /**
     * 加载配置文件并解析
-    * @param url 配置文件路径(resource.json的路径)
-    * @param resourceRoot 资源根路径。配置中的所有url都是这个路径的相对值。最终url是这个字符串与配置里资源项的url相加的值。
+    * @method RES.loadConfig
+    * @param url {string} 配置文件路径(resource.json的路径)
+    * @param resourceRoot {string} 资源根路径。配置中的所有url都是这个路径的相对值。最终url是这个字符串与配置里资源项的url相加的值。
     */
     function loadConfig(url: string, resourceRoot?: string): void;
     /**
     * 根据组名加载一组资源
-    * @param name 要加载资源组的组名
-    * @param priority 加载优先级,可以为负数,默认值为0。
+    * @method RES.loadGroup
+    * @param name {string} 要加载资源组的组名
+    * @param priority {number} 加载优先级,可以为负数,默认值为0。
     * 低优先级的组必须等待高优先级组完全加载结束才能开始，同一优先级的组会同时加载。
     */
     function loadGroup(name: string, priority?: number): void;
     /**
     * 检查某个资源组是否已经加载完成
-    * @param groupName 组名
+    * @method RES.isGroupLoaded
+    * @param name {string} 组名
+    * @returns {boolean}
     */
     function isGroupLoaded(name: string): boolean;
     /**
     * 根据组名获取组加载项列表
-    * @param name 组名
+    * @method RES.getGroupByName
+    * @param name {string} 组名
+    * @returns {egret.ResourceItem}
     */
     function getGroupByName(name: string): ResourceItem[];
     /**
     * 创建自定义的加载资源组,注意：此方法仅在资源配置文件加载完成后执行才有效。
     * 可以监听ResourceEvent.CONFIG_COMPLETE事件来确认配置加载完成。
-    * @param name 要创建的加载资源组的组名
-    * @param keys 要包含的键名列表，key对应配置文件里的name属性或sbuKeys属性的一项。
-    * @param override 是否覆盖已经存在的同名资源组,默认false。
-    * @return 是否创建成功，如果传入的keys为空，或keys全部无效，则创建失败。
+    * @method RES.createGroup
+    * @param name {string} 要创建的加载资源组的组名
+    * @param keys {egret.Array<string>} 要包含的键名列表，key对应配置文件里的name属性或sbuKeys属性的一项。
+    * @param override {boolean} 是否覆盖已经存在的同名资源组,默认false。
+    * @returns {boolean}
     */
     function createGroup(name: string, keys: string[], override?: boolean): boolean;
     /**
     * 检查配置文件里是否含有指定的资源
-    * @param name 对应配置文件里的name属性。
+    * @method RES.hasRes
+    * @param name {string} 对应配置文件里的name属性。
+    * @returns {boolean}
     */
     function hasRes(name: string): boolean;
     /**
     * 同步方式获取缓存的已经加载成功的资源。<br/>
-    * @param name 对应配置文件里的name属性。
+    * @method RES.getRes
+    * @param name {string} 对应配置文件里的name属性。
+    * @returns {any}
     */
     function getRes(name: string): any;
     /**
     * 异步方式获取配置里的资源。只要是配置文件里存在的资源，都可以通过异步方式获取。
-    * @param name 对应配置文件里的name属性。
-    * @param compFunc 回调函数。示例：compFunc(data):void,若设置了other参数则为:compFunc(data,other):void。
-    * @param thisObject 回调函数的this引用
+    * @method RES.getResAsync
+    * @param name {string} 对应配置文件里的name属性。
+    * @param compFunc {Function} 回调函数。示例：compFunc(data):void,若设置了other参数则为:compFunc(data,other):void。
+    * @param thisObject {any} 回调函数的this引用
     */
     function getResAsync(name: string, compFunc: Function, thisObject: any): void;
     /**
     * 通过完整URL方式获取外部资源。
-    * @param url 要加载文件的外部路径。
-    * @param compFunc 回调函数。示例：compFunc(data):void,若设置了other参数则为:compFunc(data,other):void。
-    * @param thisObject 回调函数的this引用
-    * @param type 文件类型(可选)。请使用ResourceItem类中定义的静态常量。若不设置将根据文件扩展名生成。
+    * @method RES.getResByUrl
+    * @param url {string} 要加载文件的外部路径。
+    * @param compFunc {Function} 回调函数。示例：compFunc(data):void,若设置了other参数则为:compFunc(data,other):void。
+    * @param thisObject {any} 回调函数的this引用
+    * @param type {string} 文件类型(可选)。请使用ResourceItem类中定义的静态常量。若不设置将根据文件扩展名生成。
     */
     function getResByUrl(url: string, compFunc: Function, thisObject: any, type?: string): void;
     /**
     * 销毁某个资源文件的缓存数据,返回是否删除成功。
-    * @param name 配置文件中加载项的name属性
+    * @method RES.destroyRes
+    * @param name {string} 配置文件中加载项的name属性
+    * @returns {boolean}
     */
     function destroyRes(name: string): boolean;
     /**
     * 添加事件侦听器,参考ResourceEvent定义的常量。
+    * @method RES.addEventListener
     * @param type {string} 事件的类型。
     * @param listener {Function} 处理事件的侦听器函数。此函数必须接受 Event 对象作为其唯一的参数，并且不能返回任何结果，
     * 如下面的示例所示： function(evt:Event):void 函数可以有任何名称。
@@ -3947,13 +4039,13 @@ declare module RES {
     * @param useCapture {boolean} 确定侦听器是运行于捕获阶段还是运行于目标和冒泡阶段。如果将 useCapture 设置为 true，
     * 则侦听器只在捕获阶段处理事件，而不在目标或冒泡阶段处理事件。如果 useCapture 为 false，则侦听器只在目标或冒泡阶段处理事件。
     * 要在所有三个阶段都侦听事件，请调用 addEventListener 两次：一次将 useCapture 设置为 true，一次将 useCapture 设置为 false。
-    * @param  priority {number} 事件侦听器的优先级。优先级由一个带符号的 32 位整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在
+    * @param priority {number} 事件侦听器的优先级。优先级由一个带符号的 32 位整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在
     * 优先级为 n -1 的侦听器之前得到处理。如果两个或更多个侦听器共享相同的优先级，则按照它们的添加顺序进行处理。默认优先级为 0。
     */
     function addEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean, priority?: number): void;
     /**
     * 移除事件侦听器,参考ResourceEvent定义的常量。
-    * @method egret.EventDispatcher#removeEventListener
+    * @method RES.removeEventListener
     * @param type {string} 事件名
     * @param listener {Function} 侦听函数
     * @param thisObject {any} 侦听函数绑定的this对象
@@ -3962,23 +4054,27 @@ declare module RES {
     function removeEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean): void;
 }
 declare module RES {
+    /**
+    * @class RES.ResourceConfig
+    * @classdesc
+    */
     class ResourceConfig {
-        /**
-        * 构造函数
-        */
         constructor();
         /**
         * 根据组名获取组加载项列表
-        * @param name 组名
+        * @method RES.ResourceConfig#getGroupByName
+        * @param name {string} 组名
+        * @returns {egret.ResourceItem}
         */
         public getGroupByName(name: string): ResourceItem[];
         /**
         * 创建自定义的加载资源组,注意：此方法仅在资源配置文件加载完成后执行才有效。
         * 可以监听ResourceEvent.CONFIG_COMPLETE事件来确认配置加载完成。
-        * @param name 要创建的加载资源组的组名
-        * @param keys 要包含的键名列表，key对应配置文件里的name属性或sbuKeys属性的一项。
-        * @param override 是否覆盖已经存在的同名资源组,默认false。
-        * @return 是否创建成功，如果传入的keys为空，或keys全部无效，则创建失败。
+        * @method RES.ResourceConfig#createGroup
+        * @param name {string} 要创建的加载资源组的组名
+        * @param keys {egret.Array<string>} 要包含的键名列表，key对应配置文件里的name属性或sbuKeys属性的一项。
+        * @param override {boolean} 是否覆盖已经存在的同名资源组,默认false。
+        * @returns {boolean}
         */
         public createGroup(name: string, keys: string[], override?: boolean): boolean;
         /**
@@ -3991,18 +4087,23 @@ declare module RES {
         private groupDic;
         /**
         * 解析一个配置文件
-        * @param data 配置文件数据
-        * @param folder 加载项的路径前缀。
+        * @method RES.ResourceConfig#parseConfig
+        * @param data {any} 配置文件数据
+        * @param folder {string} 加载项的路径前缀。
         */
         public parseConfig(data: any, folder: string): void;
         /**
         * 获取加载项类型。
-        * @param name 对应配置文件里的name属性。
+        * @method RES.ResourceConfig#getType
+        * @param name {string} 对应配置文件里的name属性。
+        * @returns {string}
         */
         public getType(name: string): string;
         /**
         * 获取加载项信息对象
-        * @param name 对应配置文件里的name属性。
+        * @method RES.ResourceConfig#getResourceItem
+        * @param name {string} 对应配置文件里的name属性。
+        * @returns {egret.ResourceItem}
         */
         public getResourceItem(name: string): ResourceItem;
         /**
@@ -6568,7 +6669,7 @@ declare module egret {
         * 构造函数
         * @method egret.AddItems#constructor
         */ 
-        constructor();
+        constructor(target: string, propertyName: string, position: string, relativeTo: string);
         /**
         * 要添加到的属性
         * @member egret.AddItems#propertyName
@@ -6618,7 +6719,7 @@ declare module egret {
         * 构造函数
         * @method egret.SetProperty#constructor
         */ 
-        constructor();
+        constructor(target: string, name: string, value: any);
         /**
         * 要修改的属性名
         * @member egret.SetProperty#name
@@ -6670,7 +6771,7 @@ declare module egret {
         * @method egret.State#constructor
         * @param properties {any}
         */
-        constructor(properties?: any);
+        constructor(name: string, overrides: IOverride[]);
         /**
         * 已经初始化标志
         */ 
@@ -6685,7 +6786,7 @@ declare module egret {
         * 这些覆盖在进入状态时按顺序应用，在退出状态时按相反的顺序删除。
         * @member egret.State#overrides
         */ 
-        public overrides: any[];
+        public overrides: IOverride[];
         /**
         * 此视图状态作为 String 数组所属的状态组。
         * @member egret.State#stateGroups
@@ -6929,20 +7030,20 @@ declare module egret {
     * @classdesc
     * 按钮组件基类
     * @extends egret.SkinnableComponent
-    */ 
+    */
     class ButtonBase extends SkinnableComponent {
         /**
         * 构造函数
         * @method egret.ButtonBase#constructor
-        */ 
+        */
         constructor();
         /**
         * 已经开始过不断抛出buttonDown事件的标志
-        */ 
+        */
         private _downEventFired;
         /**
         * 重发buttonDown事件计时器
-        */ 
+        */
         private autoRepeatTimer;
         /**
         * [SkinPart]按钮上的文本标签
@@ -6953,7 +7054,7 @@ declare module egret {
         /**
         * 指定在用户按住鼠标按键时是否重复分派 buttonDown 事件。
         * @member egret.ButtonBase#autoRepeat
-        */ 
+        */
         public autoRepeat : boolean;
         private _repeatDelay;
         /**
@@ -6965,7 +7066,7 @@ declare module egret {
         /**
         * 用户在按钮上按住鼠标时，buttonDown 事件之间相隔的毫秒数。
         * @member egret.ButtonBase#repeatInterval
-        */ 
+        */
         public repeatInterval : number;
         private _hovered;
         /**
@@ -6978,7 +7079,7 @@ declare module egret {
         * 强制让按钮停在鼠标按下状态,此方法不会导致重复抛出buttonDown事件,仅影响皮肤State。
         * @method egret.ButtonBase#_keepDown
         * @param down {boolean} 是否按下
-        */ 
+        */
         public _setKeepDown(down: boolean): void;
         private _label;
         /**
@@ -6992,7 +7093,7 @@ declare module egret {
         /**
         * 指示第一次分派 MouseEvent.MOUSE_DOWN 时，是否按下鼠标以及鼠标指针是否在按钮上。
         * @member egret.ButtonBase#mouseCaptured
-        */ 
+        */
         public mouseCaptured : boolean;
         private _stickyHighlighting;
         /**
@@ -7003,65 +7104,65 @@ declare module egret {
         public stickyHighlighting : boolean;
         /**
         * 开始抛出buttonDown事件
-        */ 
+        */
         private checkButtonDownConditions();
         /**
         * 添加鼠标事件监听
         * @method egret.ButtonBase#addHandlers
-        */ 
+        */
         public addHandlers(): void;
         /**
         * 添加舞台鼠标弹起事件监听
-        */ 
+        */
         private addStageMouseHandlers();
         /**
         * 移除舞台鼠标弹起事件监听
-        */ 
+        */
         private removeStageMouseHandlers();
         /**
         * 按钮是否是按下的状态
-        */ 
+        */
         private isDown();
         /**
         * 检查需要启用还是关闭重发计时器
-        */ 
+        */
         private checkAutoRepeatTimerConditions(buttonDown);
         /**
         * 启动重发计时器
-        */ 
+        */
         private startTimer();
         /**
         * 停止重发计时器
-        */ 
+        */
         private stopTimer();
         /**
         * 鼠标事件处理
         * @method egret.ButtonBase#mouseEventHandler
         * @param event {Event}
-        */ 
+        */
         public mouseEventHandler(event: Event): void;
         /**
         * 按钮弹起事件
         * @method egret.ButtonBase#buttonReleased
-        */ 
+        */
         public buttonReleased(): void;
         /**
         * 按钮点击事件
         * @method egret.ButtonBase#clickHandler
         * @param event {TouchEvent}
-        */ 
+        */
         public clickHandler(event: TouchEvent): void;
         /**
         * 舞台上鼠标弹起事件
-        */ 
+        */
         private stage_mouseUpHandler(event);
         /**
         * 自动重发计时器首次延迟结束事件
-        */ 
+        */
         private autoRepeat_timerDelayHandler(event);
         /**
         * 自动重发buttonDown事件
-        */ 
+        */
         private autoRepeat_timerHandler(event);
         /**
         * @method egret.ButtonBase#getCurrentSkinState
@@ -11175,6 +11276,7 @@ declare module egret {
         * @member egret.ProgressBar#value
         */
         public value : number;
+        private animationValue;
         /**
         * 动画播放更新数值
         */

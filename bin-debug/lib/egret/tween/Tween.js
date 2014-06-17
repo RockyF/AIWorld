@@ -67,7 +67,6 @@ var egret;
 
         Tween.removeTweens = function (target) {
             if (!target.tween_count) {
-                egret.Logger.warning("target没有正在执行tween");
                 return;
             }
             var tweens = Tween._tweens;

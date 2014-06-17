@@ -188,7 +188,7 @@ var egret;
             var measuredWidths = this.measuredWidths;
             var maxWidth;
             if (this._hasWidthSet) {
-                maxWidth = this.explicitWidth;
+                maxWidth = this._explicitWidth;
             } else {
                 maxWidth = this._textWidth;
             }

@@ -61,7 +61,7 @@ var dragonBones;
                 if (this._display) {
                     var parent = this._display.parent;
                     if (parent) {
-                        var index = -1;
+                        var index = parent.getChildIndex(this._display);
                     }
                     this.removeDisplay();
                 }

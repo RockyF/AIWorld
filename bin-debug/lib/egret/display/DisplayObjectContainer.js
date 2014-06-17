@@ -153,6 +153,11 @@ var egret;
                 child.dispatchEventWith(egret.Event.ADDED, true);
             if (this._stage) {
                 child._onAddToStage();
+                var list = DisplayObjectContainer.__EVENT__ADD_TO_STAGE_LIST;
+                while (list.length > 0) {
+                    var childAddToStage = list.shift();
+                    childAddToStage.dispatchEventWith(egret.Event.ADDED_TO_STAGE);
+                }
             }
 
             return child;
@@ -196,6 +201,11 @@ var egret;
                 child.dispatchEventWith(egret.Event.REMOVED, true);
             if (this._stage) {
                 child._onRemoveFromStage();
+                var list = DisplayObjectContainer.__EVENT__REMOVE_FROM_STAGE_LIST;
+                while (list.length > 0) {
+                    var childAddToStage = list.shift();
+                    childAddToStage.dispatchEventWith(egret.Event.REMOVED_FROM_STAGE);
+                }
             }
             child._parentChanged(null);
             locChildren.splice(index, 1);
@@ -321,7 +331,7 @@ var egret;
             for (var i = 0; i < l; i++) {
                 var child = this._children[i];
                 var bounds;
-                if (!child.visible || !(bounds = egret.DisplayObject.getTransformBounds(child.getBounds(egret.Rectangle.identity), child._getMatrix()))) {
+                if (!child.visible || !(bounds = egret.DisplayObject.getTransformBounds(child._getSize(egret.Rectangle.identity), child._getMatrix()))) {
                     continue;
                 }
                 var x1 = bounds.x, y1 = bounds.y, x2 = bounds.width + bounds.x, y2 = bounds.height + bounds.y;
@@ -395,7 +405,7 @@ var egret;
             }
             if (!result) {
                 if (this._texture_to_render || this["_graphics"]) {
-                    return _super.prototype.hitTest.call(this, x, y);
+                    return _super.prototype.hitTest.call(this, x, y, ignoreTouchEnabled);
                 }
             }
             return result;
@@ -418,6 +428,27 @@ var egret;
                 child._onRemoveFromStage();
             }
         };
+
+        /**
+        * 很据子显示对象的name属性获取子显示对象
+        * @method egret.DisplayObjectContainer#getChildByName
+        * @param name {string} name
+        * @returns {egret.DisplayObject}
+        */
+        DisplayObjectContainer.prototype.getChildByName = function (name) {
+            var locChildren = this._children;
+            var count = this.numChildren;
+            var displayObject;
+            for (var i = 0; i < count; i++) {
+                displayObject = locChildren[i];
+                if (displayObject.name == name) {
+                    return displayObject;
+                }
+            }
+            return null;
+        };
+        DisplayObjectContainer.__EVENT__ADD_TO_STAGE_LIST = [];
+        DisplayObjectContainer.__EVENT__REMOVE_FROM_STAGE_LIST = [];
         return DisplayObjectContainer;
     })(egret.DisplayObject);
     egret.DisplayObjectContainer = DisplayObjectContainer;
