@@ -12,14 +12,17 @@ A web game framework<br/>
 
 ------
 这个框架在一定程度上模仿了box2D，整个游戏世界由数据驱动，通过绑定userData来间接驱动视图，可以看到test中有代码：
->onUpdate=(objectMap:HashMap):void=>{
->	objectMap.foreach(function(item):void{
->		item.userData.x = item.x;
->		item.userData.y = item.y;
->		item.userData.rotation = item.rotation;
->	}, this);
->};
+
+    onUpdate=(objectMap:HashMap):void=>{
+        objectMap.foreach(function(item):void{
+    		item.userData.x = item.x;
+    		item.userData.y = item.y;
+    		item.userData.rotation = item.rotation;
+    	}, this);
+    };
+    
 最后给整个游戏世界一个定时器驱动：
->clock=():void=>{
->	this.world.update();
->};
+
+    clock=():void=>{
+    	this.world.update();
+    };
