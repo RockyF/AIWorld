@@ -9,3 +9,17 @@ A web game framework<br/>
 *   TBehavior.ts 对象行为基类，每个数据对象会绑定一个行为对象，单位的所有行为都有行为对象来实现。
 *   TInput.ts 外界输入类，比如鼠标和键盘的数据集中类
 *   TInputDelegate.ts 为了解耦合，使用该委托类来分离输入动作的实现
+
+------
+这个框架在一定程度上模仿了box2D，整个游戏世界由数据驱动，通过绑定userData来间接驱动视图，可以看到test中有代码：
+>onUpdate=(objectMap:HashMap):void=>{
+>	objectMap.foreach(function(item):void{
+>		item.userData.x = item.x;
+>		item.userData.y = item.y;
+>		item.userData.rotation = item.rotation;
+>	}, this);
+>};
+最后给整个游戏世界一个定时器驱动：
+>clock=():void=>{
+>	this.world.update();
+>};
