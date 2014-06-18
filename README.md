@@ -26,3 +26,5 @@ A web game framework<br/>
     clock=():void=>{
     	this.world.update();
     };
+    
+代码里还有一个test，借用了《AS3动画高级教程》中的转向行为中的机制，写了个demo，demo的视图使用了[egret框架](https://github.com/egret-labs/egret-core "https://github.com/egret-labs/egret-core")
