@@ -11,6 +11,7 @@
 
 class Ground extends egret.Sprite{
 	world:TWorld;
+	bg:egret.Bitmap;
 
 	constructor(){
 		super();
@@ -19,7 +20,14 @@ class Ground extends egret.Sprite{
 	}
 
 	init():void{
+		this.bg = new egret.Bitmap(RES.getRes("bg"));
+		this.bg.width = 480;
+		this.bg.height = 800;
+		this.addChild(this.bg);
+
 		this.world = new TWorld(480, 600);
+		var inputDelegate = new EgretInputDelegate(this);
+		this.world.setInputDelegate(inputDelegate);
 		this.world.onUpdate = this.onUpdate;
 
 		for(var i = 0; i < 10;i ++){
@@ -37,6 +45,8 @@ class Ground extends egret.Sprite{
 		this.world.addDataObject(dataObject);
 
 		setInterval(this.clock, 10);
+
+		this.touchEnabled = true;
 	}
 
 	onUpdate=(objectMap:HashMap):void=>{

@@ -57,6 +57,7 @@ var GameApp = (function (_super) {
     GameApp.prototype.createGameScene = function () {
         var ground = new Ground();
         this.addChild(ground);
+        //this.addChild(new TouchTest());
     };
     return GameApp;
 })(egret.DisplayObjectContainer);

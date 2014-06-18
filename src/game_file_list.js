@@ -1,6 +1,7 @@
 var game_file_list = [
 	"GameApp.js",
 	"LoadingUI.js",
+	"TouchTest.js",
 	"utils/HashMap.js",
 	"utils/Utils.js",
 	"utils/Vector2D.js",
@@ -8,11 +9,13 @@ var game_file_list = [
 	"core/TBehavior.js",
 	"core/TContext.js",
 	"core/TDataObject.js",
+	"core/TInputDelegate.js",
 	"core/TWorld.js",
 	"test/behavior/VeerBehavior.js",
 	"test/behavior/BCat.js",
 	"test/behavior/BMouse.js",
 	"test/display/Cat.js",
+	"test/EgretInputDelegate.js",
 	"test/display/Ground.js",
 	"test/display/Mouse.js",];
 var document_class = "GameApp";

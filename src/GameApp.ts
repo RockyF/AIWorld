@@ -58,6 +58,7 @@ class GameApp extends egret.DisplayObjectContainer {
 	private createGameScene():void {
 		var ground = new Ground();
 		this.addChild(ground);
+		//this.addChild(new TouchTest());
 	}
 }
 

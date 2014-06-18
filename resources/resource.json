@@ -1,6 +1,11 @@
 {
 	"resources": [
 		{
+			"name": "bg",
+			"type": "image",
+			"url": "assets/bg.png"
+		},
+		{
 			"name": "mouse_face",
 			"type": "image",
 			"url": "assets/mouse.png"
@@ -15,7 +20,7 @@
 	"groups": [
 		{
 			"name": "preload",
-			"keys": "mouse_face,cat_face"
+			"keys": "mouse_face,cat_face,bg"
 		}
 	]
 }

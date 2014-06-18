@@ -31,15 +31,17 @@ var BCat = (function (_super) {
         }else{
         this.chooseTargetMouse();
         }*/
-        this.chooseTargetMouse(Math.random() < 0.01);
-
+        //this.chooseTargetMouse(Math.random() < 0.01);
+        this.targetVector.x = this.input.mouseX;
+        this.targetVector.y = this.input.mouseY;
         this.arrive(this.targetVector);
         this.update();
     };
 
     BCat.prototype.arrivedCallback = function () {
-        this.targetMouse.behavior["leaveAway"]();
-        this.targetMouse = null;
+        //		this.targetMouse.behavior["leaveAway"]();
+        //		this.targetMouse = null;
+        console.log("catch it.");
     };
 
     BCat.prototype.chooseTargetMouse = function (force) {

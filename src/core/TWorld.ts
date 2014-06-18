@@ -20,6 +20,10 @@ class TWorld{
 		this._input = new TInput();
 	}
 
+	setInputDelegate(inputDelegate:TInputDelegate):void{
+		this._input.bindDelegate(inputDelegate);
+	}
+
 	addDataObject(obj:TDataObject):void{
 		this.objectMap.put(obj.id, obj);
 	}

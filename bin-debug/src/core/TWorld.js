@@ -10,6 +10,10 @@ var TWorld = (function () {
         this.objectMap = new HashMap();
         this._input = new TInput();
     }
+    TWorld.prototype.setInputDelegate = function (inputDelegate) {
+        this._input.bindDelegate(inputDelegate);
+    };
+
     TWorld.prototype.addDataObject = function (obj) {
         this.objectMap.put(obj.id, obj);
     };
